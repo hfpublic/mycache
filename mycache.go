@@ -27,7 +27,7 @@ var (
 	groups = make(map[string]*Group)
 )
 
-func New(name string, cacheBytes int64, getter Getter) *Group {
+func NewGroup(name string, cacheBytes int64, getter Getter) *Group {
 	if getter == nil {
 		panic("nil Getter")
 	}
@@ -42,7 +42,7 @@ func New(name string, cacheBytes int64, getter Getter) *Group {
 	return g
 }
 
-func Get(name string) *Group {
+func GetGroup(name string) *Group {
 	mux.RLock()
 	g := groups[name]
 	mux.RUnlock()
