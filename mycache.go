@@ -5,6 +5,7 @@ import (
 	"log"
 	"sync"
 
+	"github.com/hfpublic/mycache/pd"
 	"github.com/hfpublic/mycache/singleflight"
 )
 
@@ -98,11 +99,16 @@ func (g *Group) load(key string) (ByteView, error) {
 }
 
 func (g *Group) getFromPeer(peer PeerGetter, key string) (ByteView, error) {
-	b, err := peer.Get(g.name, key)
+	req := &pd.Request{
+		Group: g.name,
+		Key:   key,
+	}
+	res := &pd.Response{}
+	err := peer.Get(req, res)
 	if err != nil {
 		return ByteView{}, err
 	}
-	return ByteView{b: b}, nil
+	return ByteView{b: res.Value}, nil
 }
 
 func (g *Group) getLocally(key string) (ByteView, error) {
